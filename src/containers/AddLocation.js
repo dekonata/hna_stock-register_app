@@ -1,7 +1,6 @@
 import React, { useState} from 'react';
 import SuggestBox from '../components/SuggestBox/SuggestBox';
 import TextInput from '../components/TextInput/TextInput';
-import DatePicker from "react-datepicker";
 
 const AddLocation = () => {
 		const [locationType, setLocationType] = useState('');

@@ -48,3 +48,12 @@ export const serial_number_list = [
 	'8343P42',
 	'4243P42'
 ]
+
+export const movement_type_list = [
+	'Faulty Replacement',
+	'Stolen Replacement',
+	'Purchased',
+	'Terminal Request',
+	'Faulty Return',
+	'Used Return'
+	]
