@@ -55,36 +55,42 @@ const SuggestBox = ({label, suggestlist, handleInputChange}) => {
 
 	return (
 	<div ref={inputEl}>
-		<label className="dib w4 pr5 mv2">{label} </label>
-		<div className="dib" >
-			<input 
-				className="pr5"
-				type='text'
-				autoComplete='off'
-				value={inputValue}
-				onChange={handleInput}
-				onClick={toggleSuggest}
-				onKeyDown={handleKeyPress}
-				/>
-			{suggestOpen ?
-				<div className="">
-				 	<ul className="absolute bg-white list pl0 ml0 mt0 pr1 center ba overflow z-max">
-					 	{filteredList.slice(0,10).map((item, i) => {
-					 		return(
-					 		<li 
-					 		className="hover-bg-gray pointer" 
-					 		key={i}
-					 		value={item}
-					 		tabIndex={0}
-					 		onKeyDown={key => console.log(key.key)}
-					 		onClick={(handleSelect)}
-					 		>{item}</li>)
-					 	})}
-					</ul>
+		{ Array.isArray(suggestlist) ?
+			<div>
+				<label className="dib w4 pr5 mv2">{label} </label>
+				<div className="dib" >
+					<input 
+						className="pr5"
+						type='text'
+						autoComplete='off'
+						value={inputValue}
+						onChange={handleInput}
+						onClick={toggleSuggest}
+						onKeyDown={handleKeyPress}
+						/>
+					{suggestOpen ?
+						<div className="">
+						 	<ul className="absolute bg-white list pl0 ml0 mt0 pr1 center ba overflow z-max">
+							 	{filteredList.slice(0,10).map((item, i) => {
+							 		return(
+							 		<li 
+							 		className="hover-bg-gray pointer" 
+							 		key={i}
+							 		value={item}
+							 		tabIndex={0}
+							 		onKeyDown={key => console.log(key.key)}
+							 		onClick={(handleSelect)}
+							 		>{item}</li>)
+							 	})}
+							</ul>
+						</div>
+					:
+					<div></div>}
 				</div>
+			</div>
 			:
-			<div></div>}
-		</div>
+			<div>Suggestlist not in correct Format</div>
+		}
 	</div>
 	)
 }

@@ -5,6 +5,7 @@ import StockMovementTable from '../components/StockMovementTable/StockMovementTa
 import DatePicker from "react-datepicker";
 
 
+
 const ViewEdit= ({serial_list, location_list, movement_type_list}) => {
 	const [searchValue, setSearchValue] = useState('');
 	const [stockitem, setStockItem] = useState('');
@@ -40,17 +41,37 @@ const ViewEdit= ({serial_list, location_list, movement_type_list}) => {
    	const onSearchSelect = (selected) => {
    		setSearchValue(selected)
    		setMoveOpen(false)
-
    	}
 
    	const toggleMoveOpen = () => {
+   		if (window.confirm('Are you sure?')) {
    		setMoveOpen(true)
    		// remove current location from Move To suggestbox list
    		const move_location_list = location_list.filter(location => location !== `${stockitem.location_to_id} ${stockitem.location_name}`)
    		setMoveToLocationList(move_location_list)
+   		}
    	}
 
-
+   	const deleteMovement = (movement_id) => {
+   		console.log(itemMovements)
+   		if(itemMovements.length === 1 || itemMovements.movement_type === 'Purchased') {
+   			console.log(alert('no'))
+   		} else {
+		fetch('http://localhost:3000/delete_stockmovement', {
+			method: 'delete',
+			headers: {'Content-Type': 'application/json'},			
+			body: JSON.stringify({
+				'stock_movement_id': movement_id
+				})
+		})
+		.then(response => response.json())
+		.then(id => console.log(id))
+		.then(setTimeout(() =>  {
+			setUpdate(update + 1)
+			}, 1000))
+		.catch(err => console.log(err))
+		}
+	}
 
    	const onSubmitMovement = (event) => {
    		// Extract location id for database entry
@@ -74,13 +95,11 @@ const ViewEdit= ({serial_list, location_list, movement_type_list}) => {
 				setUpdate(update + 1)
 				}, 1000))
 		.catch(err => console.log(err))
-
-		// setMoveOpen(false)
+		setMoveOpen(false)
 	}
 
 	return (
 		<div>
-			{console.log(itemMovements)}
 			<form className="">
 				<SuggestBox 
 					label="Search"
@@ -131,10 +150,10 @@ const ViewEdit= ({serial_list, location_list, movement_type_list}) => {
 					}
 					<StockMovementTable
 						movement_list={itemMovements}
+						deleteMovement={deleteMovement}
 					/>
 				</div>
 			}
-			<button onClick={() => setUpdate(update + 1)}></button>
 		</div>
 	);
 }

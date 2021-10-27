@@ -9,7 +9,11 @@ const StockCard = ({stock_type, make, model, serial, location }) => {
 			<div>
 				<span className="dib w4 pr5 mv2">Stock Type:</span>
 				<span className="">{stock_type}</span>
-				<p onClick={() => setChangeType(true)} className="link dim gray f6 f5-ns dib mr3 mv2 pointer fr" href=''>Change</p>
+				<button className="link dim gray f6 f5-ns dib mr3 mv2 pointer fr" href=''
+					value='stock_type'
+					onClick={(event) => console.log(event)}>
+						Change
+				</button>
 			</div>
 			<div>
 				<span className="dib w4 pr5 mv2">Make:</span><span className="">{make}</span>
