@@ -1,7 +1,7 @@
 import { useState, useRef, useLayoutEffect } from 'react';
 
 
-const SuggestBox = ({label, suggestlist, handleInputChange}) => {
+const SuggestBox = ({label, suggestlist, addNewEnabled, handleInputChange}) => {
 	const [suggestOpen, setSuggestOpen] = useState(false)
 	const [filteredList, setFilteredList] = useState(suggestlist);
 	const [inputValue, setInputValue] = useState('')
@@ -30,7 +30,7 @@ const SuggestBox = ({label, suggestlist, handleInputChange}) => {
 
 	const handleInput = (event) => {
 		setInputValue(event.target.value)
-		// handleInputChange(event.target.value); 
+		handleInputChange(''); 
 		setSuggestOpen(true)
 		event.target.value ?
 			setFilteredList(suggestlist.filter(serial => {
@@ -47,10 +47,19 @@ const SuggestBox = ({label, suggestlist, handleInputChange}) => {
 		setSuggestOpen(false);
 		}
 
+	const handleAddNew = event => {
+		handleInputChange(inputValue)
+		setSuggestOpen(false);
+		setFilteredList([])
+	}
+
 	const handleKeyPress = (key) => {
 		// Incomplete
 		if(key.key === 'ArrowDown') {
-			setSuggestOpen(true);}
+			setSuggestOpen(true);
+		} else {
+			return
+		}
 	}
 
 	return (
@@ -70,22 +79,28 @@ const SuggestBox = ({label, suggestlist, handleInputChange}) => {
 						/>
 					{suggestOpen ?
 						<div className="">
-						 	<ul className="absolute bg-white list pl0 ml0 mt0 pr1 center ba overflow z-max">
+						 	<ul className="absolute w4 bg-white list ml0 mt0 pa1 center ba overflow z-max">
 							 	{filteredList.slice(0,10).map((item, i) => {
 							 		return(
 							 		<li 
-							 		className="hover-bg-gray pointer" 
-							 		key={i}
-							 		value={item}
-							 		tabIndex={0}
-							 		onKeyDown={key => console.log(key.key)}
-							 		onClick={(handleSelect)}
+								 		className="hover-bg-gray pointer" 
+								 		key={i}
+								 		value={item}
+								 		tabIndex={0}
+								 		onKeyDown={key => console.log(key.key)}
+								 		onClick={handleSelect}
 							 		>{item}</li>)
 							 	})}
+							 	{!filteredList.length && addNewEnabled ?
+								 	<p onClick={handleAddNew} className="f6 link underline  b mv1 pointer">New {label}</p>
+								 	:
+								 	<div></div>
+							 	}
 							</ul>
 						</div>
 					:
-					<div></div>}
+					<div></div>
+					}
 				</div>
 			</div>
 			:

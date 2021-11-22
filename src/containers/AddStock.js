@@ -1,10 +1,12 @@
 import React, { useState} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setRoute } from '../components/Navibar/navibarSlice';
 import SuggestBox from '../components/SuggestBox/SuggestBox';
 import TextInput from '../components/TextInput/TextInput';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-const AddStock = ({stock_type_list, supplier_list, make_list, model_list, onRouteChange}) => {
+const AddStock = ({stock_type_list, supplier_list, make_list, model_list}) => {
 	const [stockTypeValue, setStockTypeValue] = useState('');
 	const [supplierValue, setSupplierValue] = useState('');
 	const [receivedDate, setReceivedDate] = useState(new Date());
@@ -12,6 +14,12 @@ const AddStock = ({stock_type_list, supplier_list, make_list, model_list, onRout
 	const [modelValue, setModelValue] = useState('');
 	const [serialNumberValue, setSerialNumberValue] = useState('')
 	const [IMEIValue, setIMEIValue] = useState('')
+
+	const { types, makes, models, conditions } = useSelector(state => state.suggestlists.stocklists)
+	const { suppliers } = useSelector(state => state.suggestlists.locationlists)
+
+
+	const dispatch = useDispatch()
 
 	const onSubmitAddStock = (event) => {
 		event.preventDefault()
@@ -33,16 +41,18 @@ const AddStock = ({stock_type_list, supplier_list, make_list, model_list, onRout
 		})
 		.then(response => response.json())
 		.then(serial => alert(serial + ' added'))
-		.then(onRouteChange(''))
+		.then(() => dispatch(setRoute('')))
 		.catch(err => console.log(err))
 	}
 
 	return (
 		<div className="pt2">
+			{console.log(types)}
 			<form>
 				<SuggestBox 
 					label="Stock Type:"
-					suggestlist={stock_type_list} 
+					suggestlist={types} 
+					addNewEnabled={true}
 					handleInputChange={input_value => setStockTypeValue(input_value)}
 					/>
 				<div>
@@ -56,20 +66,22 @@ const AddStock = ({stock_type_list, supplier_list, make_list, model_list, onRout
 				<SuggestBox 
 					label="Supplier:"
 					value={supplierValue} 
-					suggestlist={supplier_list}
-					addEnabled={true} 
+					suggestlist={suppliers}
+					addNewEnabled={true} 
 					handleInputChange={input_value => setSupplierValue(input_value)}
 					/>
 				<SuggestBox 
 					label="Make:"
 					value={makeValue} 
-					suggestlist={make_list} 
+					suggestlist={makes} 
+					addNewEnabled={true} 
 					handleInputChange={input_value => setMakeValue(input_value)}
 					/>
 				<SuggestBox 
 					label="Model:"
 					value={modelValue} 
-					suggestlist={model_list} 
+					suggestlist={models} 
+					addNewEnabled={true} 
 					handleInputChange={input_value => setModelValue(input_value)}
 					/>				
 				<TextInput

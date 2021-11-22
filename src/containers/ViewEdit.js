@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import SuggestBox from '../components/SuggestBox/SuggestBox';
 import StockCard from '../components/StockCard/StockCard';
 import StockMovementTable from '../components/StockMovementTable/StockMovementTable';
@@ -6,7 +7,10 @@ import DatePicker from "react-datepicker";
 
 
 
-const ViewEdit= ({serial_list, location_list, movement_type_list}) => {
+const ViewEdit= ({movement_type_list}) => {
+	const serial_list = useSelector(state => state.suggestLists.serialList)
+	const location_list = useSelector(state => state.suggestLists.locationList)
+
 	const [searchValue, setSearchValue] = useState('');
 	const [stockitem, setStockItem] = useState('');
 	const [itemMovements, setItemMovements] = useState([])
@@ -53,10 +57,6 @@ const ViewEdit= ({serial_list, location_list, movement_type_list}) => {
    	}
 
    	const deleteMovement = (movement_id) => {
-   		console.log(itemMovements)
-   		if(itemMovements.length === 1 || itemMovements.movement_type === 'Purchased') {
-   			console.log(alert('no'))
-   		} else {
 		fetch('http://localhost:3000/delete_stockmovement', {
 			method: 'delete',
 			headers: {'Content-Type': 'application/json'},			
@@ -66,11 +66,8 @@ const ViewEdit= ({serial_list, location_list, movement_type_list}) => {
 		})
 		.then(response => response.json())
 		.then(id => console.log(id))
-		.then(setTimeout(() =>  {
-			setUpdate(update + 1)
-			}, 1000))
+		.then(() =>  setUpdate(update + 1))
 		.catch(err => console.log(err))
-		}
 	}
 
    	const onSubmitMovement = (event) => {
@@ -89,11 +86,8 @@ const ViewEdit= ({serial_list, location_list, movement_type_list}) => {
 		})
 		.then(response => response.json())
 		.then(movement_id => alert('Movement with id ' + movement_id + ' added'))
-		// Wait 1 second for database update to be completed, 
 		// then increase update state value by 1 to trigger useState and update values
-		.then(setTimeout(() =>  {
-				setUpdate(update + 1)
-				}, 1000))
+		.then(() => setUpdate(update + 1))
 		.catch(err => console.log(err))
 		setMoveOpen(false)
 	}

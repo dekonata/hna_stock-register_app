@@ -1,8 +1,6 @@
 import React, {useState} from 'react'
 
 const StockCard = ({stock_type, make, model, serial, location }) => {
-	const [changeType, setChangeType] = useState(false);
-
 
 	return(
 		<div>

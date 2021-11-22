@@ -4,8 +4,9 @@ import AddLocation from './AddLocation';
 import SuggestBox from '../components/SuggestBox/SuggestBox';
 
 
-const Add = ({add_list, stock_type_list, supplier_list, make_list, model_list, onRouteChange}) => {
+const Add = ({add_list, stock_type_list, supplier_list, make_list, model_list }) => {
 	const [addValue, setAddValue] = useState('')
+	const [addList] = useState(['Stock', 'Location'])
 
 	const onAddSelect = (input_value) => {
 		setAddValue(input_value)
@@ -19,7 +20,7 @@ const Add = ({add_list, stock_type_list, supplier_list, make_list, model_list, o
 							supplier_list={supplier_list}
 							make_list={make_list}
              				model_list={model_list}
-             				onRouteChange={onRouteChange}
+             				// onRouteChange={onRouteChange}
              				 />
              case "Location":
              	return <AddLocation/>
@@ -34,7 +35,7 @@ const Add = ({add_list, stock_type_list, supplier_list, make_list, model_list, o
 				<SuggestBox 
 					label="Add"
 					handleInputChange={onAddSelect} 
-					suggestlist={add_list} />
+					suggestlist={addList} />
 			</form>
 			{returnAddType(addValue)}
 		</div>

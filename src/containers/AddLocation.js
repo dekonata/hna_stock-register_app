@@ -3,25 +3,41 @@ import SuggestBox from '../components/SuggestBox/SuggestBox';
 import TextInput from '../components/TextInput/TextInput';
 
 const AddLocation = () => {
-		const [locationType, setLocationType] = useState('');
-		const [locationID, setLocationID] = useState('');
-		const [locationName, setLocationName] = useState('');
+	const [locationType, setLocationType] = useState('');
+	const [locationID, setLocationID] = useState('');
+	const [locationName, setLocationName] = useState('');
 
-const onSubmitAddStock = (event) => {
-	console.log(locationType)
+	const onSubmitAddStock = (event) => {
 	event.preventDefault()
-		fetch('http://localhost:3000/addlocation', {
-		method: 'post',
-		headers: {'Content-Type': 'application/json'},
-		body: JSON.stringify({
-			location_type: locationType,
-			location_id: locationID,
-			location_name: locationName
-			})
-		})
-		.then(response => response.json())
-		.then(id => alert('Stock location with id ' + id + ' added'))
-		.catch(err => console.log(err))
+
+	const postAddStock = async () => {
+		try {
+			const url = 'http://localhost:3000/addlocation'
+			const config = {
+				method: 'post',
+				headers: {'Content-Type': 'application/json'},
+				body: JSON.stringify({
+					location_type: locationType,
+					location_id: locationID,
+					location_name: locationName
+				})
+			} 
+			const response = await fetch(url, config);
+			const json =  await response.json()
+			if(!response.ok) {
+				throw new Error(json.code)
+			} 
+			alert(json)
+		} catch (errcode) {
+			console.log(errcode)
+			if (errcode.message === '23505') {
+				alert('Another location has already been assigned this Location ID. Enter a different Location ID')
+			}
+			console.log('POST submit add stock failed with error: ' + errcode)
+		}
+	}
+
+	postAddStock()
 }
 
 return (

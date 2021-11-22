@@ -1,8 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import './App.css';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchSerialList, fetchLocationList, fetchSuggestLists } from '../components/SuggestBox/suggestBoxSlice'
 import Navibar from '../components/Navibar/Navibar';
 import Add from './Add';
 import ViewEdit from './ViewEdit';
+import  MovementPDF  from '../components/MovementPDF/MovementPDF';
+import { PDFDownloadLink } from '@react-pdf/renderer';
 import { 
   add_option, 
   stock_type_list, 
@@ -10,60 +14,64 @@ import {
   make_list,
   model_list,
   serial_number_list,
-  movement_type_list } from '../data/selectionLists'
+  movement_type_list } from '../data/selectionLists';
 
 
 function App() {
-  const [route, setRoute] = useState('')
-  const [serialList, setSerialList] = useState('')
-  const [locationList, setLocationList] = useState('')
+  const dispatch = useDispatch()
 
-  const onRouteChange = (route) => {
-    setRoute(route)
-  }
+  const route = useSelector(state => state.route.value)
+
 
   useEffect(() => {
-    // get serial number list from database
-    fetch('http://localhost:3000/serial_list', {
-      method: 'get'
-    })
-    .then(response => response.json())
-    .then(serial_list => setSerialList(serial_list))
-    .catch(err => console.log(err))
+    // Set Suggestbox list states from database
+    dispatch(fetchSerialList())
 
-    // get location list with location_id and location_name from database
-    fetch('http://localhost:3000/locationlist', {
-      method: 'get'
-    })
-    .then(response => response.json())
-    .then(locationlist => setLocationList(locationlist))
-    .catch(err => console.log(err))
+    dispatch(fetchLocationList())
+
+    dispatch(fetchSuggestLists())
 
     // Run whenever route changes ensure list is updated on changes
-    }, [route])
+    }, [route, dispatch])
+
+
+  const returnRoute = () => {
+    switch(route) {
+        case 'add':
+            return (
+              <Add 
+                  add_list={add_option} 
+                  stock_type_list={stock_type_list} 
+                  supplier_list={supplier_list}
+                  serial_number_list={serial_number_list}
+                  make_list={make_list}
+                  model_list={model_list}
+                />
+            );
+        case 'view_edit':
+            return (
+                <ViewEdit 
+                    movement_type_list={movement_type_list}
+                />
+            );
+        case 'reports':
+            return (
+                <MovementPDF/>
+            )
+        default:
+            return(
+                <div>CHOOSE</div>
+            )
+    }
+  }
 
   return (
     <div>
       <div className="pa2 pa2-ns center-l center-ns mw4 mw6-ns bb">
-        <Navibar onRouteChange={onRouteChange}/>
+        <Navibar />
         <div className="pt2 ph1-ns mh1">
-          { route === 'add' 
-          ? <Add 
-              add_list={add_option} 
-              stock_type_list={stock_type_list} 
-              supplier_list={supplier_list}
-              serial_number_list={serial_number_list}
-              make_list={make_list}
-              model_list={model_list}
-              onRouteChange={onRouteChange}
-            />
-          : route === 'view_edit' 
-          ? <ViewEdit 
-              serial_list={serialList}
-              location_list={locationList}
-              movement_type_list={movement_type_list}
-            />
-          : <div></div>
+          { 
+            returnRoute()
           }
         </div>
       </div>
