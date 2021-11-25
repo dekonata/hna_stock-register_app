@@ -47,7 +47,6 @@ const AddStock = ({stock_type_list, supplier_list, make_list, model_list}) => {
 
 	return (
 		<div className="pt2">
-			{console.log(types)}
 			<form>
 				<SuggestBox 
 					label="Stock Type:"

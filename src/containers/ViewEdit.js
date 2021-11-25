@@ -8,8 +8,8 @@ import DatePicker from "react-datepicker";
 
 
 const ViewEdit= ({movement_type_list}) => {
-	const serial_list = useSelector(state => state.suggestLists.serialList)
-	const location_list = useSelector(state => state.suggestLists.locationList)
+	const serial_list = useSelector(state => state.suggestlists.stocklists.serials)
+	const location_list = useSelector(state => state.suggestlists.locationlists.locations)
 
 	const [searchValue, setSearchValue] = useState('');
 	const [stockitem, setStockItem] = useState('');
@@ -19,6 +19,7 @@ const ViewEdit= ({movement_type_list}) => {
 	const [movementDate, setMovementDate] = useState(new Date())
 	const [movementType, setMovementType] = useState('')
 	const [moveToLocationsList, setMoveToLocationList] = useState([])
+	// Increase update state +1 to rerun fetch and update values
 	const [update, setUpdate] = useState(0)
 
     useEffect(() => {
@@ -86,7 +87,7 @@ const ViewEdit= ({movement_type_list}) => {
 		})
 		.then(response => response.json())
 		.then(movement_id => alert('Movement with id ' + movement_id + ' added'))
-		// then increase update state value by 1 to trigger useState and update values
+		// Increase update state value by 1 to trigger useState and update values
 		.then(() => setUpdate(update + 1))
 		.catch(err => console.log(err))
 		setMoveOpen(false)
@@ -96,7 +97,7 @@ const ViewEdit= ({movement_type_list}) => {
 		<div>
 			<form className="">
 				<SuggestBox 
-					label="Search"
+					label="Search Serial:"
 					suggestlist={serial_list}
 					handleInputChange={onSearchSelect}
 				/>

@@ -1,12 +1,25 @@
-import { useState, useRef, useLayoutEffect } from 'react';
+import { useState, useRef, useLayoutEffect, useEffect } from 'react';
+import useRoveFocus from "./useRoveFocus";
+import ListItem from "./ListItem"
 
 
 const SuggestBox = ({label, suggestlist, addNewEnabled, handleInputChange}) => {
 	const [suggestOpen, setSuggestOpen] = useState(false)
-	const [filteredList, setFilteredList] = useState(suggestlist);
+	const [filteredList, setFilteredList] = useState([]);
 	const [inputValue, setInputValue] = useState('')
 
+	// Set/Change list item focus using arrow keys or during events
+	const [focus, setFocus] = useRoveFocus(filteredList.length)
+
 	const inputEl = useRef(null)
+
+	useEffect(() => {
+    // Set filteredList value to first 10 values of suggestlist provided
+    	if (Array.isArray(suggestlist)) {
+    		const shortlist = suggestlist.slice(0,10)
+    		setFilteredList(shortlist)
+    	}
+    }, [suggestlist])
 
 	useLayoutEffect(() => {
 		// Add Event listener to body to close suggestbox when clicked
@@ -25,26 +38,35 @@ const SuggestBox = ({label, suggestlist, addNewEnabled, handleInputChange}) => {
 	}, [])
 
 	const toggleSuggest = (event) => {
-		setSuggestOpen(!suggestOpen)
+		if(suggestOpen) {
+			setSuggestOpen(false)
+			setFocus(-1)
+		} else {
+			setSuggestOpen(true)
+			setFocus(-1)
+		}
 	}
 
 	const handleInput = (event) => {
 		setInputValue(event.target.value)
 		handleInputChange(''); 
 		setSuggestOpen(true)
-		event.target.value ?
-			setFilteredList(suggestlist.filter(serial => {
-			return serial.toLowerCase().includes(event.target.value.toLowerCase());
-			}))
-		:
-		setFilteredList(suggestlist);
+		if (event.target.value) {
+			const filtered = suggestlist.filter(serial => {
+				return serial.toLowerCase().includes(event.target.value.toLowerCase());
+			});
+			setFilteredList(filtered.slice(0,10))
+		} else {
+			setFilteredList(suggestlist.slice(0,10));
+		}
 	}
 
 	const handleSelect = (event) => {
 		setInputValue(event.target.innerHTML);
 		handleInputChange(event.target.innerHTML);
-		setFilteredList(suggestlist);
+		setFilteredList(suggestlist.slice(0,10));
 		setSuggestOpen(false);
+		setFocus(event.target.value)
 		}
 
 	const handleAddNew = event => {
@@ -53,9 +75,9 @@ const SuggestBox = ({label, suggestlist, addNewEnabled, handleInputChange}) => {
 		setFilteredList([])
 	}
 
-	const handleKeyPress = (key) => {
+	const handleKeyPress = (event) => {
 		// Incomplete
-		if(key.key === 'ArrowDown') {
+		if(event.key === 'ArrowDown') {
 			setSuggestOpen(true);
 		} else {
 			return
@@ -69,27 +91,30 @@ const SuggestBox = ({label, suggestlist, addNewEnabled, handleInputChange}) => {
 				<label className="dib w4 pr5 mv2">{label} </label>
 				<div className="dib" >
 					<input 
-						className="pr5"
+						className="pr-80"
 						type='text'
 						autoComplete='off'
 						value={inputValue}
 						onChange={handleInput}
 						onClick={toggleSuggest}
 						onKeyDown={handleKeyPress}
+						tabIndex={0}
 						/>
 					{suggestOpen ?
 						<div className="">
-						 	<ul className="absolute w4 bg-white list ml0 mt0 pa1 center ba overflow z-max">
-							 	{filteredList.slice(0,10).map((item, i) => {
+						 	<ul className="absolute w5 bg-white list ml0 mt0 pa1 center ba overflow z-max">
+							 	{filteredList.map((item, index) => {
 							 		return(
-							 		<li 
-								 		className="hover-bg-gray pointer" 
-								 		key={i}
-								 		value={item}
-								 		tabIndex={0}
-								 		onKeyDown={key => console.log(key.key)}
-								 		onClick={handleSelect}
-							 		>{item}</li>)
+							 			<ListItem
+							 				key={index}
+							 				setFocus={setFocus}
+							 				index={index}
+							 				focus={focus === index}
+							 				value={item}
+							 				handleSelect={handleSelect}
+							 			/>
+							 		)
+
 							 	})}
 							 	{!filteredList.length && addNewEnabled ?
 								 	<p onClick={handleAddNew} className="f6 link underline  b mv1 pointer">New {label}</p>

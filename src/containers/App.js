@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import './App.css';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchSerialList, fetchLocationList, fetchSuggestLists } from '../components/SuggestBox/suggestBoxSlice'
+import { fetchSuggestLists } from '../components/SuggestBox/suggestBoxSlice'
 import Navibar from '../components/Navibar/Navibar';
 import Add from './Add';
 import ViewEdit from './ViewEdit';
@@ -25,14 +25,8 @@ function App() {
 
   useEffect(() => {
     // Set Suggestbox list states from database
-    dispatch(fetchSerialList())
-
-    dispatch(fetchLocationList())
-
     dispatch(fetchSuggestLists())
-
-    // Run whenever route changes ensure list is updated on changes
-    }, [route, dispatch])
+    }, [dispatch])
 
 
   const returnRoute = () => {
