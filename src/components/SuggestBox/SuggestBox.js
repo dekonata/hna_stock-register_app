@@ -3,14 +3,29 @@ import useRoveFocus from "./useRoveFocus";
 import ListItem from "./ListItem"
 
 
-const SuggestBox = ({label, suggestlist, addNewEnabled, handleInputChange}) => {
+const SuggestBox = ({initial_input ,label, suggestlist, addNewEnabled, handleInputChange}) => {
 	const [suggestOpen, setSuggestOpen] = useState(false)
 	const [filteredList, setFilteredList] = useState([]);
+	useEffect(() => {
+    // Set filteredList value to first 10 values of suggestlist provided
+    	if (Array.isArray(suggestlist)) {
+    		const shortlist = suggestlist.slice(0,10)
+    		setFilteredList(shortlist)
+    	}
+    }, [suggestlist]);
+
 	const [inputValue, setInputValue] = useState('')
+	useEffect(() => {
+    // If initial_input is provides, set inputValue
+    	if (initial_input) {
+    		setInputValue(initial_input)
+    	}
+    }, [initial_input]);
 
 	// Set/Change list item focus using arrow keys or during events
 	const [focus, setFocus] = useRoveFocus(filteredList.length)
 
+	// Ref added to input to enable closing suggestbox when user clicks outside this div
 	const inputEl = useRef(null)
 
 	useEffect(() => {
@@ -19,7 +34,7 @@ const SuggestBox = ({label, suggestlist, addNewEnabled, handleInputChange}) => {
     		const shortlist = suggestlist.slice(0,10)
     		setFilteredList(shortlist)
     	}
-    }, [suggestlist])
+    }, [suggestlist]);
 
 	useLayoutEffect(() => {
 		// Add Event listener to body to close suggestbox when clicked
@@ -91,7 +106,7 @@ const SuggestBox = ({label, suggestlist, addNewEnabled, handleInputChange}) => {
 				<label className="dib w4 pr5 mv2">{label} </label>
 				<div className="dib" >
 					<input 
-						className="pr-80"
+						className=""
 						type='text'
 						autoComplete='off'
 						value={inputValue}

@@ -6,5 +6,7 @@ export const DateFormatter = (date) => {
 	return formatted_date
 }
 
-
+export const useFetch = (url, config) => {
+	
+}
 

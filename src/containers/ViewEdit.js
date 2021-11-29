@@ -22,6 +22,11 @@ const ViewEdit= ({movement_type_list}) => {
 	// Increase update state +1 to rerun fetch and update values
 	const [update, setUpdate] = useState(0)
 
+	const getStockItemDetails = async () => {
+		// Incomplete - create fetch function to fetch item details to be passed to children for updating
+		const url = 'http://localhost:3000/stockitem/' + searchValue
+	}
+
     useEffect(() => {
     	// when a search value is selected, fetch the data for that value and assign it to stockitem state
     	if(searchValue) {

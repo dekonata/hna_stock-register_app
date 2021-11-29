@@ -7,10 +7,10 @@ const AddLocation = () => {
 	const [locationID, setLocationID] = useState('');
 	const [locationName, setLocationName] = useState('');
 
-	const onSubmitAddStock = (event) => {
+	const onSubmitAddLocation = (event) => {
 	event.preventDefault()
 
-	const postAddStock = async () => {
+	const postAddLocation= async () => {
 		try {
 			const url = 'http://localhost:3000/addlocation'
 			const config = {
@@ -23,21 +23,22 @@ const AddLocation = () => {
 				})
 			} 
 			const response = await fetch(url, config);
-			const json =  await response.json()
+			const json_response =  await response.json()
+			console.log(json_response)
 			if(!response.ok) {
-				throw new Error(json.code)
+				throw new Error(json_response.code)
 			} 
-			alert(json)
+			alert(`Location with location id ${json_response} has been added`)
 		} catch (errcode) {
 			console.log(errcode)
 			if (errcode.message === '23505') {
-				alert('Another location has already been assigned this Location ID. Enter a different Location ID')
+				alert('Another location has already been assigned this name or Location ID. Enter a different Location ID and/or name')
 			}
-			console.log('POST submit add stock failed with error: ' + errcode)
+			console.log('POST submit add stock failed with error: ', errcode)
 		}
 	}
 
-	postAddStock()
+	postAddLocation()
 }
 
 return (
@@ -60,7 +61,7 @@ return (
 				<input 
 					type="submit" 
 					value="Submit" 
-					onClick={onSubmitAddStock}
+					onClick={onSubmitAddLocation}
 					/>
 			}
 		</form>
