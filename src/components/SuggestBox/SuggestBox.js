@@ -25,9 +25,6 @@ const SuggestBox = ({initial_input ,label, suggestlist, addNewEnabled, handleInp
 	// Set/Change list item focus using arrow keys or during events
 	const [focus, setFocus] = useRoveFocus(filteredList.length)
 
-	// Ref added to input to enable closing suggestbox when user clicks outside this div
-	const inputEl = useRef(null)
-
 	useEffect(() => {
     // Set filteredList value to first 10 values of suggestlist provided
     	if (Array.isArray(suggestlist)) {
@@ -35,6 +32,9 @@ const SuggestBox = ({initial_input ,label, suggestlist, addNewEnabled, handleInp
     		setFilteredList(shortlist)
     	}
     }, [suggestlist]);
+
+    // Ref added to input to enable closing suggestbox when user clicks outside this div
+	const inputEl = useRef(null)
 
 	useLayoutEffect(() => {
 		// Add Event listener to body to close suggestbox when clicked
@@ -94,6 +94,9 @@ const SuggestBox = ({initial_input ,label, suggestlist, addNewEnabled, handleInp
 		// Incomplete
 		if(event.key === 'ArrowDown') {
 			setSuggestOpen(true);
+		} else if(event.key === 'Enter' ) {
+			// Add function to select entered value if in list when enter is pressed
+			console.log('Enter')
 		} else {
 			return
 		}
@@ -133,8 +136,10 @@ const SuggestBox = ({initial_input ,label, suggestlist, addNewEnabled, handleInp
 							 	})}
 							 	{!filteredList.length && addNewEnabled ?
 								 	<p onClick={handleAddNew} className="f6 link underline  b mv1 pointer">New {label}</p>
-								 	:
-								 	<div></div>
+								 	: !filteredList.length ?
+								 		<div className='b f6'>Invalid {label}</div>
+								 		:
+								 		<div></div>
 							 	}
 							</ul>
 						</div>

@@ -1,14 +1,20 @@
 import React, { useState} from 'react';
+import { useDispatch } from 'react-redux';
+import { fetchSuggestLists } from '../components/SuggestBox/suggestBoxSlice';
+import { setRoute } from '../components/Navibar/navibarSlice';
 import SuggestBox from '../components/SuggestBox/SuggestBox';
 import TextInput from '../components/TextInput/TextInput';
+import LocationIdSelect from '../components/LocationIDSelect/LocationIDSelect'
 
 const AddLocation = () => {
 	const [locationType, setLocationType] = useState('');
 	const [locationID, setLocationID] = useState('');
 	const [locationName, setLocationName] = useState('');
 
+	const dispatch = useDispatch();
+
 	const onSubmitAddLocation = (event) => {
-	event.preventDefault()
+	event.preventDefault();
 
 	const postAddLocation= async () => {
 		try {
@@ -21,14 +27,16 @@ const AddLocation = () => {
 					location_id: locationID,
 					location_name: locationName
 				})
-			} 
+			};
 			const response = await fetch(url, config);
-			const json_response =  await response.json()
-			console.log(json_response)
+			const json_response =  await response.json();
+			console.log(json_response);
 			if(!response.ok) {
-				throw new Error(json_response.code)
+				throw new Error(json_response.code);
 			} 
-			alert(`Location with location id ${json_response} has been added`)
+			alert(`Location with location id ${json_response} has been added`);
+			dispatch(fetchSuggestLists());
+			dispatch(setRoute(''));
 		} catch (errcode) {
 			console.log(errcode)
 			if (errcode.message === '23505') {
@@ -42,16 +50,16 @@ const AddLocation = () => {
 }
 
 return (
-	<div>
+	<div>	
 		<form>
 			<SuggestBox 
 				label="Location Type:"
-				suggestlist= {["Club", "Supplier"]} 
+				suggestlist= {["Club", "Supplier", "Albatros Warehouse"]} 
 				handleInputChange={(value) => setLocationType(value)}
 				/>
-			<TextInput
-				label="Location ID:"
-				handleInputChange={(event) => setLocationID(event.target.value)}
+			<LocationIdSelect
+				location_type={locationType}
+				handleInputChange={(value) => setLocationID(value)}
 			/>
 			<TextInput
 				label="Location Name:"

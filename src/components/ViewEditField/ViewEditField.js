@@ -38,6 +38,7 @@ const ViewEditField = ({serial, suggestlist, label, value, data_field}) => {
 				} 
 				} catch(err) {
 					console.log(err);
+					alert('There was a problem')
 				}
 			}
 
@@ -47,7 +48,7 @@ const ViewEditField = ({serial, suggestlist, label, value, data_field}) => {
 	}
 
 	return(
-		<div>
+		<div className=''>
 		{ !editOpen 
 			?
 			<div>
@@ -67,7 +68,10 @@ const ViewEditField = ({serial, suggestlist, label, value, data_field}) => {
 						label={label}
 						suggestlist={suggestlist} 
 						addNewEnabled={true}
-						handleInputChange={input_value => setEditValue(input_value)}
+						handleInputChange={input_value => {
+							!data_field === "supplier_id" ? setEditValue(input_value) : setEditValue(input_value.split(' ')[0])
+							}
+						}
 						/>
 						<input
 							className="mr2"

@@ -1,5 +1,6 @@
 import React, { useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { fetchSuggestLists } from '../components/SuggestBox/suggestBoxSlice'
 import { setRoute } from '../components/Navibar/navibarSlice';
 import SuggestBox from '../components/SuggestBox/SuggestBox';
 import TextInput from '../components/TextInput/TextInput';
@@ -23,25 +24,32 @@ const AddStock = ({stock_type_list, supplier_list, make_list, model_list}) => {
 
 	const onSubmitAddStock = (event) => {
 		event.preventDefault()
+
+		// Get only ID value from supplier selected
+		const supplierID = supplierValue.split(' ')[0]
 		fetch('http://localhost:3000/addstock', {
 			method: 'post',
 			headers: {'Content-Type': 'application/json'},
 			body: JSON.stringify({
 				stock_item_serial: serialNumberValue.toUpperCase(),
 			    stock_type: stockTypeValue,
+			    supplier_id: supplierID,
 			    make: makeValue,
 			    model: modelValue,
 			    stock_condition: "NEW",
 			    stock_owner: "HNA",
 			    movement_type: "purchase",
-			    location_to_id: 1,
+			    location_to_id: 1000,
 			    movement_date: receivedDate,
 			    imei: IMEIValue
 			})
 		})
 		.then(response => response.json())
 		.then(serial => alert(serial + ' added'))
-		.then(() => dispatch(setRoute('')))
+		.then(() => {
+			dispatch(setRoute(''))
+			dispatch(fetchSuggestLists())
+		})
 		.catch(err => console.log(err))
 	}
 
@@ -66,7 +74,7 @@ const AddStock = ({stock_type_list, supplier_list, make_list, model_list}) => {
 					label="Supplier:"
 					value={supplierValue} 
 					suggestlist={suppliers}
-					addNewEnabled={true} 
+					addNewEnabled={false} 
 					handleInputChange={input_value => setSupplierValue(input_value)}
 					/>
 				<SuggestBox 

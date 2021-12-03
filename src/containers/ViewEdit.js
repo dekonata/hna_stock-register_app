@@ -100,6 +100,7 @@ const ViewEdit= ({movement_type_list}) => {
 
 	return (
 		<div>
+		{console.log(stockitem)}
 			<form className="">
 				<SuggestBox 
 					label="Search Serial:"
@@ -116,6 +117,7 @@ const ViewEdit= ({movement_type_list}) => {
 						serial={stockitem.stock_item_serial}
 						condition={stockitem.stock_condition}
 						owner={stockitem.stock_owner}
+						supplier={`${stockitem.supplier_id} ${stockitem.supplier_name}`}
 						location={`${stockitem.location_to_id} ${stockitem.location_name}`}
 					/>
 					{moveOpen 
