@@ -7,7 +7,7 @@ import TextInput from '../components/TextInput/TextInput';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-const AddStock = ({stock_type_list, supplier_list, make_list, model_list}) => {
+const AddStock = () => {
 	const [stockTypeValue, setStockTypeValue] = useState('');
 	const [supplierValue, setSupplierValue] = useState('');
 	const [receivedDate, setReceivedDate] = useState(new Date());
@@ -16,7 +16,7 @@ const AddStock = ({stock_type_list, supplier_list, make_list, model_list}) => {
 	const [serialNumberValue, setSerialNumberValue] = useState('')
 	const [IMEIValue, setIMEIValue] = useState('')
 
-	const { types, makes, models, conditions } = useSelector(state => state.suggestlists.stocklists)
+	const { types, makes, models } = useSelector(state => state.suggestlists.stocklists)
 	const { suppliers } = useSelector(state => state.suggestlists.locationlists)
 
 

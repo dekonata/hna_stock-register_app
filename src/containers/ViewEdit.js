@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import SuggestBox from '../components/SuggestBox/SuggestBox';
+import TextInput from '../components/TextInput/TextInput';
 import StockCard from '../components/StockCard/StockCard';
 import StockMovementTable from '../components/StockMovementTable/StockMovementTable';
 import DatePicker from "react-datepicker";
@@ -10,6 +11,7 @@ import DatePicker from "react-datepicker";
 const ViewEdit= ({movement_type_list}) => {
 	const serial_list = useSelector(state => state.suggestlists.stocklists.serials)
 	const location_list = useSelector(state => state.suggestlists.locationlists.locations)
+	const { conditions } = useSelector(state => state.suggestlists.stocklists)
 
 	const [searchValue, setSearchValue] = useState('');
 	const [stockitem, setStockItem] = useState('');
@@ -17,7 +19,9 @@ const ViewEdit= ({movement_type_list}) => {
 	const [moveOpen, setMoveOpen] = useState(false)
 	const [newLocation, setNewLocation] = useState('')
 	const [movementDate, setMovementDate] = useState(new Date())
+	const [stockCondition, setStockCondition] = useState('')
 	const [movementType, setMovementType] = useState('')
+	const [referenceValue, setReferenceValue] = useState('')
 	const [moveToLocationsList, setMoveToLocationList] = useState([])
 	// Increase update state +1 to rerun fetch and update values
 	const [update, setUpdate] = useState(0)
@@ -87,7 +91,9 @@ const ViewEdit= ({movement_type_list}) => {
 			    movement_type: movementType,
 			    stock_item_serial: searchValue,
 			    location_to_id: location_id,
-			    movement_date: movementDate
+			    movement_date: movementDate,
+			    reference: referenceValue,
+			    stock_condition: stockCondition
    				})
 		})
 		.then(response => response.json())
@@ -100,7 +106,6 @@ const ViewEdit= ({movement_type_list}) => {
 
 	return (
 		<div>
-		{console.log(stockitem)}
 			<form className="">
 				<SuggestBox 
 					label="Search Serial:"
@@ -135,10 +140,20 @@ const ViewEdit= ({movement_type_list}) => {
 									onChange={(date) => setMovementDate(date)} /><br/>
 							</div>
 						<SuggestBox 
+							label="Stock Condition"
+							suggestlist={conditions}
+							handleInputChange={selected => setStockCondition(selected)}
+						/>
+						<SuggestBox 
 							label="Movement Type"
 							suggestlist={movement_type_list}
 							handleInputChange={selected => setMovementType(selected)}
 						/>
+						<TextInput
+							label="Reference:"
+							value={referenceValue}
+							handleInputChange={event => setReferenceValue(event.target.value)}
+							/>
 						<input
 							type='submit'
 							value='Capture'

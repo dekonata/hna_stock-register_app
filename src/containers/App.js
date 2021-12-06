@@ -9,11 +9,6 @@ import  MovementPDF  from '../components/MovementPDF/MovementPDF';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import { 
   add_option, 
-  stock_type_list, 
-  supplier_list, 
-  make_list,
-  model_list,
-  serial_number_list,
   movement_type_list } from '../data/selectionLists';
 
 
@@ -35,11 +30,6 @@ function App() {
             return (
               <Add 
                   add_list={add_option} 
-                  stock_type_list={stock_type_list} 
-                  supplier_list={supplier_list}
-                  serial_number_list={serial_number_list}
-                  make_list={make_list}
-                  model_list={model_list}
                 />
             );
         case 'view_edit':
